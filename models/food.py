@@ -28,6 +28,3 @@ class Food(Base):
     # 생성/수정 시간 (선택사항)
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
-
-    def __repr__(self):
-        return f"<Food(id={self.id}, food_cd='{self.food_cd}', food_name='{self.food_name}')>"

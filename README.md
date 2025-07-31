@@ -39,7 +39,6 @@
 
 ### 데이터베이스
 - **SQLite**: 개발 환경용 (기본)
-- **PostgreSQL**: 프로덕션 환경용 (옵션)
 
 ### 기타
 - **Docker**: 컨테이너화
@@ -136,7 +135,38 @@ pip install -r requirements.txt
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### 3. 접속 확인
+### 3. 데이터베이스 초기화
+
+애플리케이션 실행 시 `food_nutrition_db.xlsx` 파일이 프로젝트 루트에 있으면 자동으로 데이터베이스가 초기화됩니다.
+
+#### 자동 초기화
+- 애플리케이션 시작 시 Excel 파일을 자동으로 감지하여 데이터베이스 초기화
+- 기존 데이터가 있으면 추가로 데이터를 삽입 (중복 방지)
+
+#### 수동 초기화
+Excel 파일을 수동으로 처리하거나 기존 데이터를 완전히 초기화하려면:
+
+```bash
+# 기본 실행 (기존 데이터 유지, 새 데이터 추가)
+python scripts/init_db_from_excel.py
+
+# 기존 데이터 완전 삭제 후 초기화
+python scripts/init_db_from_excel.py --clear
+
+# 특정 Excel 파일 지정
+python scripts/init_db_from_excel.py path/to/your/excel_file.xlsx
+
+# 특정 Excel 파일로 완전 초기화
+python scripts/init_db_from_excel.py path/to/your/excel_file.xlsx --clear
+```
+
+#### 초기화 스크립트 옵션
+- `--clear`: 기존 데이터를 모두 삭제하고 새로 초기화
+- 파일 경로 미지정 시: 프로젝트 루트의 `food_nutrition_db.xlsx` 사용
+- 배치 처리로 대용량 데이터 효율적 처리
+- 상세한 로그 출력으로 진행 상황 확인
+
+### 4. 접속 확인
 
 - **API 서버**: http://localhost:8000
 - **API 문서**: http://localhost:8000/docs
@@ -284,7 +314,28 @@ WORKERS=1                                            # 워커 프로세스 수
 ```
 
 ### 데이터베이스 초기화
+
+#### 자동 초기화
 Excel 파일(`food_nutrition_db.xlsx`)이 프로젝트 루트에 있으면 애플리케이션 시작 시 자동으로 데이터가 초기화됩니다.
+
+#### 수동 초기화 스크립트
+```bash
+# 기본 초기화 (기존 데이터 유지)
+python scripts/init_db_from_excel.py
+
+# 완전 초기화 (기존 데이터 삭제)
+python scripts/init_db_from_excel.py --clear
+
+# 특정 파일로 초기화
+python scripts/init_db_from_excel.py your_data.xlsx
+```
+
+#### 초기화 스크립트 특징
+- **배치 처리**: 대용량 데이터 효율적 처리 (100개씩 배치)
+- **데이터 검증**: 필수 필드 검증 및 타입 변환
+- **에러 처리**: 개별 행 처리 실패 시에도 전체 프로세스 계속
+- **상세 로깅**: 진행 상황 및 성공/실패 통계 출력
+- **안전한 변환**: Excel의 빈 값, '-' 등을 안전하게 처리
 
 ### 코드 구조 설명
 
@@ -312,15 +363,6 @@ class FoodAPIException(Exception):
         self.details = details
 ```
 
-### 프로덕션 배포 시 고려사항
-
-1. **데이터베이스**: SQLite 대신 PostgreSQL 사용
-2. **환경변수**: 민감한 정보는 환경변수로 관리
-3. **로깅**: 구조화된 로깅 설정
-4. **모니터링**: 헬스체크 및 메트릭 수집
-5. **보안**: CORS 설정, 인증/인가 구현
-6. **성능**: 캐싱, 커넥션 풀 최적화
-
 ## 📚 참고 자료
 
 - [FastAPI 공식 문서](https://fastapi.tiangolo.com/)
@@ -329,8 +371,5 @@ class FoodAPIException(Exception):
 - [REST API 설계 가이드](https://restfulapi.net/)
 - [HTTP 상태 코드](https://developer.mozilla.org/ko/docs/Web/HTTP/Status)
 
-## 📄 라이선스
-
-이 프로젝트는 MIT 라이선스 하에 있습니다.
 
 ---
