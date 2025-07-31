@@ -1,9 +1,72 @@
-# Test your FastAPI endpoints
+### Health Check
+GET http://localhost:8000/health
 
-GET http://127.0.0.1:8000/
-Accept: application/json
-###
+### Get root
+GET http://localhost:8000/
 
-GET http://127.0.0.1:8000/hello/User
-Accept: application/json
-###
+### Get all foods (pagination)
+GET http://localhost:8000/v1/foods?page=1&limit=20
+
+### Search foods
+GET http://localhost:8000/v1/foods/search?food_name=김치&research_year=2023
+
+### Get specific food
+GET http://localhost:8000/v1/foods/1
+
+### Create new food
+POST http://localhost:8000/v1/foods
+Content-Type: application/json
+
+{
+  "food_cd": "F001234",
+  "group_name": "김치류",
+  "food_name": "배추김치",
+  "research_year": "2023",
+  "maker_name": "서울",
+  "ref_name": "국민영양조사",
+  "serving_size": "100g",
+  "calorie": 25.5,
+  "carbohydrate": 4.2,
+  "protein": 1.8,
+  "province": 0.5,
+  "sugars": 2.1,
+  "salt": 850,
+  "cholesterol": 0,
+  "saturated_fatty_acids": 0.1,
+  "trans_fat": 0
+}
+
+### Update food (PUT)
+PUT http://localhost:8000/v1/foods/1
+Content-Type: application/json
+
+{
+  "food_cd": "F001234",
+  "group_name": "김치류",
+  "food_name": "배추김치",
+  "research_year": "2023",
+  "maker_name": "서울",
+  "ref_name": "국민영양조사",
+  "serving_size": "100g",
+  "calorie": 26.0,
+  "carbohydrate": 4.5,
+  "protein": 1.9,
+  "province": 0.5,
+  "sugars": 2.2,
+  "salt": 860,
+  "cholesterol": 0,
+  "saturated_fatty_acids": 0.1,
+  "trans_fat": 0
+}
+
+### Partial update food (PATCH)
+PATCH http://localhost:8000/v1/foods/1
+Content-Type: application/json
+
+{
+  "calorie": 26.5,
+  "protein": 2.0
+}
+
+### Delete food
+DELETE http://localhost:8000/v1/foods/1
